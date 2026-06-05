@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Supabase config — replace with your project values -->
+  <meta name="supabase-url" content="https://YOUR_PROJECT_ID.supabase.co" />
+  <meta name="supabase-key" content="YOUR_ANON_PUBLIC_KEY" />
+  <meta name="description" content="View Cabangile Hub's portfolio — our award-winning work in digital marketing, branding, SEO, and web design for clients across South Africa." />
+  <meta name="keywords" content="marketing portfolio, case studies, branding projects, SEO results, web design portfolio" />
+  <meta name="author" content="Cabangile Marketing Consultant Hub" />
+  <meta name="robots" content="index, follow" />
+  <title>Portfolio | Cabangile Marketing Consultant Hub</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/main.css" />
+  <style>
+    .portfolio-item { transition: opacity 0.3s ease, transform 0.3s ease; }
+    .portfolio-item-inner { background: var(--gradient-card); }
+  </style>
+</head>
+<body>
+  <!-- NAVBAR -->
+  <nav class="cmc-navbar navbar navbar-expand-lg" id="mainNav" aria-label="Main navigation">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">
+        <div class="brand-icon"><i class="bi bi-lightning-charge-fill"></i></div>
+        <div class="brand-text">Cabangile <span>Hub</span></div>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navMenu">
+        <ul class="navbar-nav mx-auto gap-1">
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="services.html">Services</a></li>
+          <li class="nav-item"><a class="nav-link active" href="portfolio.html">Portfolio</a></li>
+          <li class="nav-item"><a class="nav-link" href="products.html">Products</a></li>
+          <li class="nav-item"><a class="nav-link" href="videos.html">Videos</a></li>
+          <li class="nav-item"><a class="nav-link" href="faq.html">FAQ</a></li>
+          <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+        </ul>
+        <div class="d-flex align-items-center gap-2">
+          <div id="nav-user-menu" style="display:none;" class="d-flex align-items-center gap-2">
+            <span class="text-secondary-cmc" style="font-size:0.88rem;">Hi, <span id="nav-user-name"></span></span>
+            <a href="#" id="sign-out-btn" class="btn-secondary-cmc" style="padding:7px 16px;font-size:0.85rem;">Sign Out</a>
+          </div>
+          <a href="login.html" id="nav-login-btn" class="navbar-nav-btn nav-link">Get Started</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="page-wrapper">
+    <!-- PAGE HERO -->
+    <section class="page-hero" aria-label="Page header">
+      <div class="container position-relative z-1">
+        <div class="breadcrumb-cmc">
+          <a href="index.html">Home</a><i class="bi bi-chevron-right"></i><span>Portfolio</span>
+        </div>
+        <h1>Our <span class="gradient-text-purple">Portfolio</span></h1>
+        <p>A showcase of projects that demonstrate the power of strategic marketing and creative excellence.</p>
+      </div>
+    </section>
+
+    <!-- PORTFOLIO -->
+    <section aria-label="Portfolio projects">
+      <div class="container">
+        <!-- Filter Buttons -->
+        <div class="d-flex flex-wrap justify-content-center gap-2 mb-5 reveal">
+          <button class="filter-btn active" data-filter="all">All Projects</button>
+          <button class="filter-btn" data-filter="branding">Branding</button>
+          <button class="filter-btn" data-filter="digital">Digital Marketing</button>
+          <button class="filter-btn" data-filter="web">Web Design</button>
+          <button class="filter-btn" data-filter="social">Social Media</button>
+          <button class="filter-btn" data-filter="seo">SEO</button>
+        </div>
+
+        <!-- Portfolio Grid -->
+        <div class="portfolio-grid" id="portfolioGrid">
+
+          <div class="portfolio-item reveal" data-category="branding">
+            <div class="portfolio-item-inner" style="background:linear-gradient(135deg,#1a0a2e,#3b1d8a);">
+              <span>🎨</span>
+            </div>
+            <div class="portfolio-overlay">
+              <span class="portfolio-tag">Branding</span>
+              <h4>Zulu Heritage Fashion</h4>
+              <p>Complete brand identity — logo, colours, typography &amp; brand book.</p>
+            </div>
+          </div>
+
+          <div class="portfolio-item reveal" data-category="digital">
+            <div class="portfolio-item-inner" style="background:linear-gradient(135deg,#0a1a2e,#0c3a6b);">
+              <span>📊</span>
+            </div>
+            <div class="portfolio-overlay">
+              <span class="portfolio-tag">Digital Marketing</span>
+              <h4>Mthembu Auto Group</h4>
+              <p>Google &amp; Meta campaigns delivering 340% increase in qualified leads.</p>
+            </div>
+          </div>
+
+          <div class="portfolio-item reveal" data-category="web">
+            <div class="portfolio-item-inner" style="background:linear-gradient(135deg,#0a2a1e,#0c5a3b);">
+              <span>🌐</span>
+            </div>
+            <div class="portfolio-overlay">
+              <span class="portfolio-tag">Web Design</span>
+              <h4>Phiri Legal Associates</h4>
+              <p>Modern law firm website with client portal and case management.</p>
+            </div>
+          </div>
+
+          <div class="portfolio-item reveal" data-category="social">
+            <div class="portfolio-item-inner" style="background:linear-gradient(135deg,#2a0a1e,#6b0c3b);">
+              <span>📱</span>
+            </div>
+            <div class="portfolio-overlay">
+              <span class="portfolio-tag">Social Media</span>
+              <h4>Ndlovu Restaurant Chain</h4>
+              <p>Instagram &amp; TikTok strategy — grew from 500 to 85K followers in 6 months.</p>
+            </div>
+          </div>
+
+          <div class="portfolio-item reveal" data-category="seo">
+            <div class="portfolio-item-inner" style="background:linear-gradient(135deg,#1a2a0a,#3b5a0c);">
+              <span>🔍</span>
+            </div>
+            <div class="portfolio-overlay">
+              <span class="portfolio-tag">SEO</span>
+              <h4>KZN Property Hub</h4>
+              <p>From page 5 to #1 ranking on Google for 45 target keywords in 90 days.</p>
+            </div>
+          </div>
+
+          <div class="portfolio-item reveal" data-category="branding">
+            <div class="portfolio-item-inner" style="background:linear-gradient(135deg,#2a1a0a,#6b3b0c);">
+              <span>✨</span>
+            </div>
+            <div class="portfolio-overlay">
+              <span class="portfolio-tag">Branding</span>
+              <h4>Ubuntu Tech Startups</h4>
+              <p>Brand strategy and identity for a technology accelerator programme.</p>
+            </div>
+          </div>
+
+          <div class="portfolio-item reveal" data-category="digital">
+            <div class="portfolio-item-inner" style="background:linear-gradient(135deg,#0a0a2a,#1a1a6b);">
+              <span>🎯</span>
+            </div>
+            <div class="portfolio-overlay">
+              <span class="portfolio-tag">Digital Marketing</span>
+              <h4>Joburg Fitness Studio</h4>
+              <p>TikTok &amp; Instagram ad strategy — 280% membership growth in Q1.</p>
+            </div>
+          </div>
+
+          <div class="portfolio-item reveal" data-category="web">
+            <div class="portfolio-item-inner" style="background:linear-gradient(135deg,#1a0a1a,#4b0c4b);">
+              <span>💻</span>
+            </div>
+            <div class="portfolio-overlay">
+              <span class="portfolio-tag">Web Design</span>
+              <h4>Soweto Spaza Online</h4>
+              <p>E-commerce platform for township businesses with delivery integration.</p>
+            </div>
+          </div>
+
+          <div class="portfolio-item reveal" data-category="social">
+            <div class="portfolio-item-inner" style="background:linear-gradient(135deg,#0a1a2a,#0c3a5a);">
+              <span>🚀</span>
+            </div>
+            <div class="portfolio-overlay">
+              <span class="portfolio-tag">Social Media</span>
+              <h4>Cape Town Luxury Spa</h4>
+              <p>Pinterest &amp; Instagram content strategy — 420% increase in bookings.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- RESULTS -->
+    <section style="background:var(--bg-secondary);" aria-label="Results">
+      <div class="container">
+        <div class="text-center mb-5">
+          <div class="section-label">Impact</div>
+          <h2 class="section-title reveal">The Numbers <span class="gradient-text-gold">Speak for Themselves</span></h2>
+        </div>
+        <div class="row g-4 text-center">
+          <div class="col-6 col-md-3 reveal delay-1">
+            <div class="stat-number" data-count="340" data-suffix="%">0%</div>
+            <div class="stat-label">Average Lead Growth</div>
+          </div>
+          <div class="col-6 col-md-3 reveal delay-2">
+            <div class="stat-number" data-count="450" data-suffix="+">0+</div>
+            <div class="stat-label">Projects Completed</div>
+          </div>
+          <div class="col-6 col-md-3 reveal delay-3">
+            <div class="stat-number" data-count="98" data-suffix="%">0%</div>
+            <div class="stat-label">Client Retention Rate</div>
+          </div>
+          <div class="col-6 col-md-3 reveal delay-4">
+            <div class="stat-number" data-count="15" data-suffix="+">0+</div>
+            <div class="stat-label">Industry Awards</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section aria-label="Call to action">
+      <div class="container text-center">
+        <h2 class="section-title reveal" style="max-width:560px;margin:0 auto 16px;">Ready to Be Our Next <span class="gradient-text">Success Story?</span></h2>
+        <p style="color:var(--text-secondary);margin-bottom:32px;" class="reveal">Let's create results you'll be proud to showcase.</p>
+        <a href="contact.html" class="btn-primary-cmc reveal">Start Your Project <i class="bi bi-arrow-right"></i></a>
+      </div>
+    </section>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="cmc-footer" aria-label="Footer">
+    <div class="container">
+      <div class="row g-5">
+        <div class="col-lg-4">
+          <div class="footer-brand">
+            <div class="d-flex align-items-center gap-2 mb-3">
+              <div class="brand-icon"><i class="bi bi-lightning-charge-fill"></i></div>
+              <div class="brand-name">Cabangile <span>Hub</span></div>
+            </div>
+            <p class="footer-desc">South Africa's premier marketing consultant hub — transforming businesses through innovative digital strategies.</p>
+          </div>
+          <div class="social-links">
+            <a href="#" class="social-btn" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+            <a href="#" class="social-btn" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+            <a href="#" class="social-btn" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a>
+            <a href="#" class="social-btn" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+            <a href="#" class="social-btn" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-2">
+          <h4 class="footer-heading">Company</h4>
+          <ul class="footer-links">
+            <li><a href="about.html"><i class="bi bi-chevron-right"></i> About Us</a></li>
+            <li><a href="services.html"><i class="bi bi-chevron-right"></i> Services</a></li>
+            <li><a href="portfolio.html"><i class="bi bi-chevron-right"></i> Portfolio</a></li>
+            <li><a href="contact.html"><i class="bi bi-chevron-right"></i> Contact</a></li>
+          </ul>
+        </div>
+        <div class="col-sm-6 col-lg-2">
+          <h4 class="footer-heading">Resources</h4>
+          <ul class="footer-links">
+            <li><a href="products.html"><i class="bi bi-chevron-right"></i> Products</a></li>
+            <li><a href="videos.html"><i class="bi bi-chevron-right"></i> Videos</a></li>
+            <li><a href="faq.html"><i class="bi bi-chevron-right"></i> FAQ</a></li>
+            <li><a href="login.html"><i class="bi bi-chevron-right"></i> Client Login</a></li>
+          </ul>
+        </div>
+        <div class="col-sm-6 col-lg-2">
+          <h4 class="footer-heading">Legal</h4>
+          <ul class="footer-links">
+            <li><a href="privacy-policy.html"><i class="bi bi-chevron-right"></i> Privacy Policy</a></li>
+            <li><a href="terms-of-service.html"><i class="bi bi-chevron-right"></i> Terms of Service</a></li>
+          </ul>
+        </div>
+        <div class="col-sm-6 col-lg-2">
+          <h4 class="footer-heading">Contact</h4>
+          <ul class="footer-links">
+            <li><a href="mailto:info@cabangile.co.za"><i class="bi bi-envelope"></i> info@cabangile.co.za</a></li>
+            <li><a href="tel:+27000000000"><i class="bi bi-telephone"></i> +27 00 000 0000</a></li>
+            <li><a href="#"><i class="bi bi-geo-alt"></i> South Africa</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; <span class="current-year"></span> Cabangile Marketing Consultant Hub. All rights reserved.</p>
+        <div class="d-flex gap-3">
+          <a href="privacy-policy.html">Privacy</a>
+          <a href="terms-of-service.html">Terms</a>
+          <a href="contact.html">Contact</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Supabase + App (ESM modules) -->
+  <script type="module" src="assets/js/supabase.js"></script>
+  <script type="module" src="assets/js/main.js"></script>
+</body>
+</html>

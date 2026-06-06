@@ -436,8 +436,8 @@
         <div class="col-sm-6 col-lg-2">
           <h4 class="footer-heading">Contact</h4>
           <ul class="footer-links">
-            <li><a href="mailto:info@cabangile.co.za"><i class="bi bi-envelope"></i> info@cabangile.co.za</a></li>
-            <li><a href="tel:+27000000000"><i class="bi bi-telephone"></i> +27 00 000 0000</a></li>
+            <li><a href="mailto:info@cabangilemakertingconsultant@gmail.com.co.za"><i class="bi bi-envelope"></i> info@cabangile.co.za</a></li>
+            <li><a href="tel:+27607959447"><i class="bi bi-telephone"></i> +2760 795 9447</a></li>
             <li><a href="#"><i class="bi bi-geo-alt"></i> South Africa</a></li>
           </ul>
         </div>
@@ -452,7 +452,22 @@
       </div>
     </div>
   </footer>
+  
+<script type="module">
+  import { supabase } from './supabase.js';
 
+  // Make Supabase globally available in this page
+  window.supabase = supabase;
+
+  // Optional: check session on every page
+  async function checkUser() {
+    const { data } = await supabase.auth.getUser();
+    console.log("Current user:", data.user);
+  }
+
+  checkUser();
+</script>
+  
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <!-- Supabase + App (ESM modules) -->

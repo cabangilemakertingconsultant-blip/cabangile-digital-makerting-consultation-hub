@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaaS TV Network Engine</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background-color: #000; }
+        .tv-container { width: 100%; height: 100%; position: relative; display: flex; align-items: center; justify-content: center; }
+        video, img { width: 100%; height: 100%; object-fit: contain; display: none; }
+        .tv-overlay { position: absolute; bottom: 20px; left: 20px; background: rgba(0,0,0,0.75); color: #fff; padding: 12px 24px; border-radius: 8px; font-family: sans-serif; pointer-events: none; border-left: 4px solid #00d1b2; z-index: 10; }
+        .ad-badge { display: none; position: absolute; top: 20px; right: 20px; background: #ff3860; color: #fff; padding: 6px 16px; font-weight: bold; border-radius: 4px; text-transform: uppercase; letter-spacing: 1px; z-index: 20; }
+    </style>
+</head>
+<body>
+
+<div class="tv-container">
+    <div class="ad-badge" id="adBadge">Sponsor Ad</div>
+    <div class="tv-overlay">
+        <h5 class="m-0" id="channelName">Initializing Stream...</h5>
+        <small class="text-muted" id="contentMeta">Connecting to SaaS network nodes</small>
+    </div>
+    
+    <video id="tvVideo" autoplay muted playsinline></video>
+    <img id="tvImage" alt="SaaS Display Feed">
+</div>
+
+<script>
+    // Configuration details. Update credentials as needed.
+    const SUPABASE_URL = "https://your-supabase-url.supabase.co";
+    const SUPABASE_KEY = "your-anon-key";
+    const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    let playlist = [];
+    let adsPool = [];
+    let currentIndex = 0;
+    let itemsSinceLastAd = 0;
+    const AD_INTERVAL = 3; 
+    let currentChannel = "Main-Network";
+
+    const videoPlayer = document.getElementById('tvVideo');
+    const imagePlayer = document.getElementById('tvImage');
+    const channelNameEl = document.getElementById('channelName');
+    const contentMetaEl = document.getElementById('contentMeta');
+    const adBadgeEl = document.getElementById('adBadge');
+
+    async function initTV() {
+        const urlParams = new URLSearchParams(window.location.search);
+        if(urlParams.has('channel')) currentChannel = urlParams.get('channel');
+        
+        await fetchPlaylist();
+        await fetchAds();
+        playNext();
+
+        // Listen for real-time approvals or playlist updates
+        supabase.channel('public:media_items')
+        .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'media_items' }, () => fetchPlaylist())
+        .subscribe();
+    }
+
+    async function fetchPlaylist() {
+        let { data, error } = await supabase
+            .from('media_items')
+            .select('*')
+            .eq('status', 'approved')
+            .eq('channel', currentChannel)
+            .order('order_index', { ascending: true });
+        
+        if (!error && data.length > 0) {
+            playlist = data;
+        }
+    }
+
+    async function fetchAds() {
+        let { data } = await supabase.from('ads').select('*').eq('active', true);
+        if (data) adsPool = data;
+    }
+
+    async function playNext() {
+        if (playlist.length === 0) {
+            channelNameEl.innerText = "No Approved Streams Available";
+            return;
+        }
+
+        // Trigger monetization engine ad injection rules
+        if (itemsSinceLastAd >= AD_INTERVAL && adsPool.length > 0) {
+            itemsSinceLastAd = 0;
+            let randomAd = adsPool[Math.floor(Math.random() * adsPool.length)];
+            renderMedia(randomAd, true);
+            return;
+        }
+
+        if (currentIndex >= playlist.length) currentIndex = 0;
+        let currentItem = playlist[currentIndex];
+        
+        itemsSinceLastAd++;
+        currentIndex++;
+        renderMedia(currentItem, false);
+    }
+
+    function renderMedia(item, isAd) {
+        // Toggle system layouts safely
+        if (isAd) {
+            adBadgeEl.style.display = "block";
+            channelNameEl.innerText = "Commercial Break";
+            contentMetaEl.innerText = "Premium Monetized Segment";
+        } else {
+            adBadgeEl.style.display = "none";
+            channelNameEl.innerText = `CH: ${item.channel}`;
+            contentMetaEl.innerText = `Asset Reference ID: ${item.id.slice(0,8)}`;
+        }
+
+        // Execute server-side monetization micro-transaction routing securely
+        supabase.rpc('track_impression', { 
+            p_channel: currentChannel, 
+            p_media_id: isAd ? playlist[currentIndex % playlist.length]?.id : item.id, 
+            p_is_ad: isAd 
+        }).then(({error}) => { if(error) console.error("Impression error:", error); });
+
+        if (item.type === 'video') {
+            imagePlayer.style.display = "none";
+            videoPlayer.style.display = "block";
+            videoPlayer.src = item.url;
+            videoPlayer.load();
+            videoPlayer.play().catch(() => {
+                // Handle autoplay block safeguards
+                setTimeout(playNext, 2000);
+            });
+            videoPlayer.onended = playNext;
+        } else {
+            videoPlayer.style.display = "none";
+            imagePlayer.style.display = "block";
+            imagePlayer.src = item.url;
+            setTimeout(playNext, 5000); // 5 Seconds slide rule implementation
+        }
+    }
+
+    window.onload = initTV;
+</script>
+</body>
+</html>

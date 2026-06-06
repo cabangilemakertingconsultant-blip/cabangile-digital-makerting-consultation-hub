@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vendor Control Studio</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-light">
+
+<nav class="navbar navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Vendor Dashboard Engine</a>
+        <button class="btn btn-outline-light btn-sm" onclick="logout()">Sign Out</button>
+    </div>
+</nav>
+
+<div class="container my-5">
+    <div id="authBlock" class="card mx-auto p-4 shadow-sm" style="max-width: 450px;">
+        <h4 class="mb-3 text-center">SaaS Secure Access Portal</h4>
+        <input type="email" id="authEmail" class="form-control mb-2" placeholder="Email Address">
+        <input type="password" id="authPass" class="form-control mb-3" placeholder="Password">
+        <button class="btn btn-primary w-100 mb-2" onclick="login()">Sign In</button>
+        <button class="btn btn-link w-100 text-decoration-none btn-sm" onclick="register()">Register New Account</button>
+    </div>
+
+    <div id="mainDashboard" style="display: none;">
+        <div class="row g-4 mb-4">
+            <div class="col-md-4">
+                <div class="card p-3 bg-white shadow-sm border-0">
+                    <small class="text-uppercase tracking-wider text-muted font-weight-bold">Liquid Balance</small>
+                    <h2 class="text-success" id="valBalance">$0.00</h2>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card p-3 bg-white shadow-sm border-0">
+                    <small class="text-uppercase tracking-wider text-muted font-weight-bold">Total Platform Earnings</small>
+                    <h2 class="text-primary" id="valEarned">$0.00</h2>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card p-3 bg-white shadow-sm border-0">
+                    <small class="text-uppercase tracking-wider text-muted font-weight-bold">System Designation</small>
+                    <h2 class="text-dark" id="valRole">Vendor</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card p-4 shadow-sm mb-4">
+                    <h5>Deploy Content Broadcast Artifact</h5>
+                    <hr>
+                    <div class="mb-3">
+                        <label class="form-label">Media File Target</label>
+                        <input type="file" id="fileMedia" class="form-control" accept="video/*,image/*">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Channel Designation Tag</label>
+                        <input type="text" id="txtChannel" class="form-control" value="Main-Network">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Sequential Sorting Index (Priority)</label>
+                        <input type="number" id="numIndex" class="form-control" value="0">
+                    </div>
+                    <button class="btn btn-success w-100" onclick="uploadContent()">Stream File to Bucket Storage</button>
+                </div>
+                
+                <div class="card p-4 shadow-sm">
+                    <h5>Request Revenue Pay-out Settlement</h5>
+                    <hr>
+                    <input type="number" id="numWithdraw" class="form-control mb-3" placeholder="Amount ($)">
+                    <button class="btn btn-outline-danger w-100" onclick="requestPayout()">Initiate Settlement Request</button>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card p-4 shadow-sm mb-4">
+                    <h5>Analytics Channels Real-time Ledger</h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover mt-2">
+                            <thead>
+                                <tr><th>Channel ID</th><th>Views</th><th>Ad Views</th><th>Gross Monetization</th></tr>
+                            </thead>
+                            <tbody id="analyticsRows"></tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="card p-4 shadow-sm">
+                    <h5>My Broadcast Assets Status Pipeline</h5>
+                    <div class="table-responsive">
+                        <table class="table table-striped mt-2">
+                            <thead>
+                                <tr><th>Asset ID</th><th>Type</th><th>Index</th><th>Status Flag</th></tr>
+                            </thead>
+                            <tbody id="myMediaRows"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const SUPABASE_URL = "https://your-supabase-url.supabase.co";
+    const SUPABASE_KEY = "your-anon-key";
+    const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    let sessionUser = null;
+
+    async function login() {
+        const email = document.getElementById('authEmail').value;
+        const pass = document.getElementById('authPass').value;
+        let { data, error } = await supabase.auth.signInWithPassword({ email: email, password: pass });
+        if(error) alert(error.message); else checkSession();
+    }
+
+    async function register() {
+        const email = document.getElementById('authEmail').value;
+        const pass = document.getElementById('authPass').value;
+        let { data, error } = await supabase.auth.signUp({ email: email, password: pass });
+        if(error) alert(error.message); else alert("Registration complete! Verify or login.");
+    }
+
+    async function logout() {
+        await supabase.auth.signOut();
+        location.reload();
+    }
+
+    async function checkSession() {
+        let { data: { session } } = await supabase.auth.getSession();
+        if(session) {
+            sessionUser = session.user;
+            document.getElementById('authBlock').style.display = 'none';
+            document.getElementById('mainDashboard').style.display = 'block';
+            loadVendorData();
+        }
+    }
+
+    async function loadVendorData() {
+        // Fetch financial balances
+        let { data: wallet } = await supabase.from('wallets').select('*').eq('user_id', sessionUser.id).maybeSingle();
+        if(wallet) {
+            document.getElementById('valBalance').innerText = `$${parseFloat(wallet.balance).toFixed(4)}`;
+            document.getElementById('valEarned').innerText = `$${parseFloat(wallet.total_earned).toFixed(4)}`;
+        }
+        
+        let { data: profile } = await supabase.from('profiles').select('role').eq('id', sessionUser.id).maybeSingle();
+        if(profile) document.getElementById('valRole').innerText = profile.role.toUpperCase();
+
+        // Fetch streaming metrics
+        let { data: media } = await supabase.from('media_items').select('*').eq('user_id', sessionUser.id);
+        let mRows = '';
+        if(media) {
+            media.forEach(m => {
+                mRows += `<tr><td>${m.id.slice(0,6)}</td><td>${m.type}</td><td>${m.order_index}</td><td><span class="badge bg-secondary">${m.status}</span></td></tr>`;
+            });
+            document.getElementById('myMediaRows').innerHTML = mRows;
+        }
+
+        // Gather structural metrics
+        let { data: analytics } = await supabase.from('analytics').select('*');
+        let aRows = '';
+        if(analytics) {
+            analytics.forEach(a => {
+                aRows += `<tr><td>${a.channel}</td><td>${a.views}</td><td>${a.ad_views}</td><td>$${parseFloat(a.revenue).toFixed(4)}</td></tr>`;
+            });
+            document.getElementById('analyticsRows').innerHTML = aRows;
+        }
+    }
+
+    async function uploadContent() {
+        const fileInput = document.getElementById('fileMedia');
+        const channel = document.getElementById('txtChannel').value;
+        const oIndex = document.getElementById('numIndex').value;
+        
+        if(!fileInput.files || fileInput.files.length === 0) return alert("Select target file asset");
+        const file = fileInput.files[0];
+        const ext = file.name.split('.').pop();
+        const filePath = `${sessionUser.id}/${Date.now()}.${ext}`;
+        const type = file.type.startsWith('video') ? 'video' : 'image';
+
+        // 1. Storage deployment processing
+        let { error: uploadErr } = await supabase.storage.from('media').upload(filePath, file);
+        if(uploadErr) return alert(uploadErr.message);
+
+        // 2. Fetch accessible CDN absolute paths
+        const { data: urlData } = supabase.storage.from('media').getPublicUrl(filePath);
+
+        // 3. Insert metadata record into global tracking indexes
+        let { error: dbErr } = await supabase.from('media_items').insert({
+            user_id: sessionUser.id,
+            type: type,
+            url: urlData.publicUrl,
+            channel: channel,
+            order_index: oIndex,
+            status: 'pending'
+        });
+
+        if(dbErr) alert(dbErr.message); else { alert("Asset routed to platform verification queue!"); loadVendorData(); }
+    }
+
+    async function requestPayout() {
+        const amt = document.getElementById('numWithdraw').value;
+        if(!amt || amt <= 0) return alert("Input accurate liquidity amount target");
+        let { error } = await supabase.from('withdrawals').insert({ user_id: sessionUser.id, amount: amt });
+        if(error) alert(error.message); else alert("Payout sequence logged for verification.");
+    }
+
+    window.onload = checkSession;
+</script>
+</body>
+</html>

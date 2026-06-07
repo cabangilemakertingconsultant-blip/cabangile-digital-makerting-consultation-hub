@@ -112,6 +112,32 @@ body {
   const supabaseKey = "YOUR_ANON_KEY";
   const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 </script>
+    <script>
+async function submitLead() {
+  const name = document.getElementById("name").value;
+  const phone = document.getElementById("phone").value;
+  const message = document.getElementById("message").value;
+
+  const { error } = await supabase
+    .from("leads")
+    .insert([
+      {
+        name: name,
+        phone: phone,
+        message: message,
+        page: "landing-page"
+      }
+    ]);
+
+  if (error) {
+    document.getElementById("status").innerText = "Error sending lead";
+    console.log(error);
+  } else {
+    document.getElementById("status").innerText = "✅ Lead sent successfully!";
+  }
+}
+</script>
+
 
 <!-- HERO (HOOK) -->
 <div class="hero">

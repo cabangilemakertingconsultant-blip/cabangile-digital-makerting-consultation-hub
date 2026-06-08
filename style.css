@@ -1,84 +1,210 @@
-ody {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #0b0f19;
-    color: white;
+/* =========================
+   CABANGILE MARKETING CONSULTANT
+   FULL STYLE.CSS
+   ========================= */
+
+/* ===== GLOBAL ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Arial, sans-serif;
 }
 
-/* HERO SECTION */
+body {
+  background: #070b14;
+  color: white;
+  line-height: 1.6;
+}
+
+/* ===== HERO VIDEO SECTION ===== */
 .hero {
-    text-align: center;
-    padding: 80px 20px;
-    background: linear-gradient(120deg, #0b0f19, #111a2e);
+  position: relative;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
 }
 
-.hero h1 {
-    font-size: 40px;
-    margin-bottom: 10px;
+/* Video background */
+.hero-video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  transform: translate(-50%, -50%);
+  object-fit: cover;
+  z-index: 0;
 }
 
-.hero p {
-    font-size: 18px;
-    color: #b0b0b0;
+/* Dark overlay */
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.65);
+  z-index: 1;
 }
 
+/* Hero content */
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 900px;
+  padding: 20px;
+}
+
+.hero-content h1 {
+  font-size: 52px;
+  font-weight: 800;
+  background: linear-gradient(90deg, #00ff88, #00c2ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-content p {
+  font-size: 20px;
+  color: #cfd6ff;
+  margin-top: 10px;
+}
+
+/* ===== BUTTON ===== */
 .btn {
-    margin-top: 20px;
-    padding: 15px 25px;
-    background: #00ff88;
-    color: black;
-    border: none;
-    font-weight: bold;
-    cursor: pointer;
-    border-radius: 8px;
-    font-size: 16px;
+  display: inline-block;
+  margin-top: 25px;
+  padding: 14px 30px;
+  background: linear-gradient(90deg, #00ff88, #00c2ff);
+  color: black;
+  font-weight: bold;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: 0.3s ease;
 }
 
 .btn:hover {
-    background: #00cc6a;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(0,255,136,0.3);
 }
 
-/* SECTIONS */
+/* ===== SECTIONS ===== */
 .section {
-    padding: 60px 20px;
-    text-align: center;
+  padding: 80px 20px;
+  text-align: center;
 }
 
+.section h2 {
+  font-size: 36px;
+  margin-bottom: 20px;
+  color: #00ff88;
+}
+
+/* ===== CARDS ===== */
 .cards {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 25px;
+  margin-top: 40px;
 }
 
 .card {
-    background: #151c2f;
-    padding: 20px;
-    border-radius: 12px;
-    width: 250px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 25px;
+  border-radius: 16px;
+  width: 280px;
+  backdrop-filter: blur(10px);
+  transition: 0.3s ease;
 }
 
-/* CTA */
+.card:hover {
+  transform: translateY(-10px);
+  border-color: #00ff88;
+  box-shadow: 0 15px 40px rgba(0,255,136,0.15);
+}
+
+/* ===== CTA ===== */
 .cta {
-    background: #00ff88;
-    color: black;
-    padding: 60px 20px;
-    text-align: center;
+  background: linear-gradient(90deg, #00ff88, #00c2ff);
+  color: black;
+  padding: 90px 20px;
+  text-align: center;
 }
 
 .cta h2 {
-    font-size: 30px;
+  font-size: 38px;
+  font-weight: 900;
 }
 
+/* ===== FOOTER ===== */
 .footer {
-    text-align: center;
-    padding: 20px;
-    font-size: 12px;
-    color: gray;
+  text-align: center;
+  padding: 25px;
+  font-size: 13px;
+  color: #888;
+  background: #05070d;
 }
+
+/* ===== LOGO VIDEO ===== */
 .logo-video {
-  width: 100px;
-  height: 100px;
-  object-fit: contain;
-  border-radius: 16px;
-  filter: drop-shadow(0 0 12px rgba(0, 150, 255, 0.5));
+  width: 110px;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 20px;
+  filter: drop-shadow(0 0 18px rgba(0,255,136,0.5));
+  animation: floatLogo 3s ease-in-out infinite;
+}
+
+@keyframes floatLogo {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+  100% { transform: translateY(0); }
+}
+
+/* ===== WHATSAPP BUTTON ===== */
+.whatsapp-float {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  background: #25D366;
+  color: white;
+  border-radius: 50%;
+  text-align: center;
+  font-size: 30px;
+  line-height: 60px;
+  text-decoration: none;
+  z-index: 999;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  transition: 0.3s ease;
+}
+
+.whatsapp-float:hover {
+  transform: scale(1.1);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .hero-content h1 {
+    font-size: 32px;
+  }
+
+  .hero-content p {
+    font-size: 16px;
+  }
+
+  .cards {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .card {
+    width: 90%;
+  }
+}

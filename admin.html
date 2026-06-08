@@ -233,15 +233,3 @@ async function loadReferrals() {
   document.getElementById("referrals").innerHTML =
     (data || []).map(r => `
       <div class="card">
-        Referrer: ${r.referrer_id}<br>
-        Referred: ${r.referred_id}
-      </div>
-    `).join("");
-}
-
-/* AUTO REFRESH */
-setInterval(loadAll, 15000);
-</script>
-
-</body>
-</html

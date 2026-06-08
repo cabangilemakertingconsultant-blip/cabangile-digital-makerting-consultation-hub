@@ -1,3 +1,81 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #0b0f19;
+    color: white;
+}
+
+/* HERO SECTION */
+.hero {
+    text-align: center;
+    padding: 80px 20px;
+    background: linear-gradient(120deg, #0b0f19, #111a2e);
+}
+
+.hero h1 {
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+.hero p {
+    font-size: 18px;
+    color: #b0b0b0;
+}
+
+.btn {
+    margin-top: 20px;
+    padding: 15px 25px;
+    background: #00ff88;
+    color: black;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+.btn:hover {
+    background: #00cc6a;
+}
+
+/* SECTIONS */
+.section {
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+.card {
+    background: #151c2f;
+    padding: 20px;
+    border-radius: 12px;
+    width: 250px;
+}
+
+/* CTA */
+.cta {
+    background: #00ff88;
+    color: black;
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.cta h2 {
+    font-size: 30px;
+}
+
+.footer {
+    text-align: center;
+    padding: 20px;
+    font-size: 12px;
+    color: gray;
+}
 .logo-video {
   width: 100px;
   height: 100px;

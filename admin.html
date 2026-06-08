@@ -1,39 +1,3 @@
-ocument.getElementById('valBalance').innerText = `$${parseFloat(wallet.balance).toFixed(4)}`;
-            document.getElementById('valEarned').innerText = `$${parseFloat(wallet.total_earned).toFixed(4)}`;
-        }
-        
-        let { data: profile } = await supabase.from('profiles').select('role').eq('id', sessionUser.id).maybeSingle();
-        if(profile) document.getElementById('valRole').innerText = profile.role.toUpperCase();
-
-        // Fetch streaming metrics
-        let { data: media } = await supabase.from('media_items').select('*').eq('user_id', sessionUser.id);
-        let mRows = '';
-        if(media) {
-            media.forEach(m => {
-                mRows += `<tr><td>${m.id.slice(0,6)}</td><td>${m.type}</td><td>${m.order_index}</td><td><span class="badge bg-secondary">${m.status}</span></td></tr>`;
-            });
-            document.getElementById('myMediaRows').innerHTML = mRows;
-        }
-
-        // Gather structural metrics
-        let { data: analytics } = await supabase.from('analytics').select('*');
-        let aRows = '';
-        if(analytics) {
-            analytics.forEach(a => {
-                aRows += `<tr><td>${a.channel}</td><td>${a.views}</td><td>${a.ad_views}</td><td>$${parseFloat(a.revenue).toFixed(4)}</td></tr>`;
-            });
-            document.getElementById('analyticsRows').innerHTML = aRows;
-        }
-    }
-
-    async function uploadContent() {
-        const fileInput = document.getElementById('fileMedia');
-        const channel = document.getElementById('txtChannel').value;
-        const oIndex = document.getElementById('numIndex').value;
-        
-        if(!fileInput.files || fileInput.files.length === 0) return alert("Select target file asset");
-        const file = fileInput.files[0];
-        const ext = file.name.split('.').pop();
         const filePath = `${sessionUser.id}/${Date.now()}.${ext}`;
         const type = file.type.startsWith('video') ? 'video' : 'image';
 
@@ -45,11 +9,7 @@ ocument.getElementById('valBalance').innerText = `$${parseFloat(wallet.balance).
         const { data: urlData } = supabase.storage.from('media').getPublicUrl(filePath);
 
         // 3. Insert metadata record into global tracking indexes
-        let { error: dbErr } = await supabase.from('media_items').insert({
-            user_id: sessionUser.id,
-            type: type,
-            url: urlData.publicUrl,
-            channel: channel,
+        let { error: dbErr } = awa
             order_index: oIndex,
             status: 'pending'
         });

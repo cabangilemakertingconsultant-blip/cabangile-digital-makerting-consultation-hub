@@ -1,5 +1,4 @@
-        const filePath = `${sessionUser.id}/${Date.now()}.${ext}`;
-        const type = file.type.startsWith('video') ? 'video' : 'image';
+With('video') ? 'video' : 'image';
 
         // 1. Storage deployment processing
         let { error: uploadErr } = await supabase.storage.from('media').upload(filePath, file);
@@ -7,14 +6,7 @@
 
         // 2. Fetch accessible CDN absolute paths
         const { data: urlData } = supabase.storage.from('media').getPublicUrl(filePath);
-
-        // 3. Insert metadata record into global tracking indexes
-        let { error: dbErr } = awa
-            order_index: oIndex,
-            status: 'pending'
-        });
-
-        if(dbErr) alert(dbErr.message); else { alert("Asset routed to platform verification queue!"); loadVendorData(); }
+ication queue!"); loadVendorData(); }
     }
 
     async function requestPayout() {
@@ -29,5 +21,4 @@
 <button onclick="upload()">Upload</button>
 </script>
     <input type="text" id="videoURL">
-<button onclick="upload()">Upload</button>
-</body>
+<button onclick="upload()">Upl

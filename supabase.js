@@ -10,3 +10,5 @@ data.forEach(item => {
     <video src="${item.video_url}" controls></video>
   `;
 });
+// Create ONE global client
+const sb = supabase.createClient(https://eycytmebbrdxnpcpirsk.supabase.co,eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV5Y3l0bWViYnJkeG5wY3BpcnNrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2NjcwMjcsImV4cCI6MjA5NjI0MzAyN30.M7ODunmegKdu07BlYkge8uwgqCUDxTAS5KgMNuwCAEM);

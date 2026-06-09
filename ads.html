@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Ads Manager</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+<h2>Ads Management (PAID ONLY)</h2>
+
+<input id="title" placeholder="Title">
+<input id="media" placeholder="Image/Video URL">
+<input id="link" placeholder="Target Link">
+
+<button onclick="createAd()">Create Ad</button>
+
+<div id="list"></div>
+
+<script>
+  // =========================
+  // SUPABASE INIT
+  // =========================
+  const supabaseUrl = "YOUR_SUPABASE_URL";
+  const supabaseKey = "YOUR_SUPABASE_ANON_KEY";
+
+  const sb = supabase.createClient(supabaseUrl, supabaseKey);
+
+  // =========================
+  // ADMIN PROTECTION
+  // =========================
+  async function protectAdmin() {
+    const { data: { user } } = await sb.auth.getUser();
+
+    if (!user) {
+      window.location.href = "admin.html";
+      return;
+    }
+
+    const { data: profile } = await sb
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .single();
+
+    if (!profile || profile.role !== "admin") {
+      await sb.auth.signOut();
+      window.location.href = "admin.html";
+    }
+  }
+
+  protectAdmin();
+
+  // =========================
+  // FETCH ADS
+  // =========================
+  async function fetchAds() {
+    const { data } = await sb
+      .from("ads")
+      .select("*")
+      .order("id", { ascending: false });
+
+    return data || [];
+  }
+
+  // =========================
+  // RENDER ADS
+  // =========================
+  async function loadAds() {
+    const ads = await fetchAds();
+
+    document.getElementById("list").innerHTML = ads.map(a => `
+      <div style="border:1px solid #ccc; padding:10px; margin:10px;">
+        <h3>${a.title}</h3>
+        <img src="${a.media}" width="120">
+        <p>Status: ${a.status}</p>
+        <p>Link: ${a.link}</p>
+
+        <button onclick="updateAdStatus('${a.id}', 'ACTIVE')">Activate</button>
+        <button onclick="updateAdStatus('${a.id}', 'EXPIRED')">Expire</button>
+        <button onclick="deleteAd('${a.id}')">Delete</button>
+      </div>
+    `).join("");
+  }
+
+  // =========================
+  // CREATE AD
+  // =========================
+  async function createAd() {
+    const { data: { user } } = await sb.auth.getUser();
+
+    if (!user) {
+      alert("Not logged in");
+      return;
+    }
+
+    const title = document.getElementById("title").value;
+    const media = document.getElementById("media").value;
+    const link = document.getElementById("link").value;
+
+    const { error } = await sb.from("ads").insert({
+      title: title,
+      media: media,
+      link: link,
+      status: "PAID",
+      owner: user.id
+    });
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
+    loadAds();
+  }
+
+  // =========================
+  // UPDATE STATUS
+  // =========================
+  async function updateAdStatus(id, status) {
+    await sb
+      .from("ads")
+      .update({ status: status })
+      .eq("id", id);
+
+    loadAds();
+  }
+
+  // =========================
+  // DELETE AD (YOUR FUNCTION FIXED)
+  // =========================
+  async function deleteAd(id) {
+    await sb
+      .from("ads")
+      .delete()
+      .eq("id", id);
+
+    loadAds();
+  }
+
+  loadAds();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Support</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+<h2>Support Messages</h2>
+
+<div id="support"></div>
+
+<script>
+  // =========================
+  // SUPABASE INIT
+  // =========================
+  const supabaseUrl = "YOUR_SUPABASE_URL";
+  const supabaseKey = "YOUR_SUPABASE_ANON_KEY";
+
+  const sb = supabase.createClient(supabaseUrl, supabaseKey);
+
+  // =========================
+  // ADMIN PROTECTION
+  // =========================
+  async function protectAdmin() {
+    const { data: { user } } = await sb.auth.getUser();
+
+    if (!user) {
+      window.location.href = "admin.html";
+      return;
+    }
+
+    const { data: profile } = await sb
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .single();
+
+    if (!profile || profile.role !== "admin") {
+      await sb.auth.signOut();
+      window.location.href = "admin.html";
+    }
+  }
+
+  protectAdmin();
+
+  // =========================
+  // LOAD SUPPORT MESSAGES
+  // =========================
+  async function loadSupport() {
+    const { data, error } = await sb
+      .from("support")
+      .select("*")
+      .order("id", { ascending: false });
+
+    if (error) {
+      console.log(error.message);
+      return;
+    }
+
+    document.getElementById("support").innerHTML = (data || []).map(m => `
+      <div style="border:1px solid #ccc; padding:10px; margin:10px;">
+        <p>${m.message}</p>
+        <small>User: ${m.user_id}</small>
+
+        <br><br>
+        <button onclick="resolveMessage('${m.id}')">Resolve</button>
+      </div>
+    `).join("");
+  }
+
+  // =========================
+  // RESOLVE SUPPORT (DELETE OR MARK RESOLVED)
+  // =========================
+  async function resolveMessage(id) {
+    await sb
+      .from("support")
+      .delete()
+      .eq("id", id);
+
+    loadSupport();
+  }
+
+  // =========================
+  // REQUIRED FUNCTION (YOUR REQUEST)
+  // =========================
+  async function sendSupport(message) {
+    const { data: { user } } = await sb.auth.getUser();
+
+    if (!user) return;
+
+    await sb.from("support").insert({
+      user_id: user.id,
+      message: message
+    });
+  }
+
+  loadSupport();
+</script>
+
+</body>
+</html>

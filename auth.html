@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Supabase Auth</title>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  if (localStorage.getItem("admin") !== "true") {
+    window.location.replace("auth.html");
+  }
+});
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  background: #0f172a;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.box {
+  width: 360px;
+  background: #111827;
+  padding: 25px;
+  border-radius: 12px;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 8px;
+  background: #1f2937;
+  color: white;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background: #2563eb;
+  color: white;
+  font-weight: bold;
+}
+
+p {
+  text-align: center;
+  margin-top: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+  <h2>Admin Login</h2>
+
+  <input type="email" id="email" placeholder="Email"/>
+  <input type="password" id="password" placeholder="Password"/>
+
+  <button onclick="login()">Login</button>
+  <button onclick="register()">Register</button>
+
+  <p id="msg"></p>
+</div>
+
+<script>
+// =========================
+// SUPABASE CONFIG
+// =========================
+const supabaseUrl = "https://YOUR_PROJECT_ID.supabase.co";
+const supabaseKey = "YOUR_SUPABASE_ANON_KEY";
+
+const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+// =========================
+// REGISTER USER
+// =========================
+async function register() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  const { data, error } = await supabaseClient.auth.signUp({
+    email,
+    password
+  });
+
+  if (error) {
+    showMsg(error.message);
+    return;
+  }
+
+  // Insert profile row
+  await supabaseClient.from("profiles").insert({
+    id: data.user.id,
+    email: email,
+    role: "user"
+  });
+
+  showMsg("Account created. Check email.");
+}
+
+// =========================
+// LOGIN USER
+// =========================
+async function login() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  const { data, error } = await supabaseClient.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if (error) {
+    showMsg(error.message);
+    return;
+  }
+
+  const user = data.user;
+
+  // CHECK ROLE
+  const { data: profile } = await supabaseClient
+    .from("profiles")
+    .select("*")
+    .eq("id", user.id)
+    .single();
+
+  if (!profile) {
+    showMsg("No profile found");
+    return;
+  }
+
+  if (profile.role !== "admin") {
+    showMsg("Access denied (admin only)");
+    await supabaseClient.auth.signOut();
+    return;
+  }
+
+  // STORE SESSION FLAG
+  localStorage.setItem("admin", "true");
+
+  showMsg("Login success");
+
+  setTimeout(() => {
+    window.location.href = "admin.html";
+  }, 800);
+}
+
+// =========================
+// AUTO REDIRECT IF LOGGED IN
+// =========================
+supabaseClient.auth.getSession().then(({ data }) => {
+  if (data.session) {
+    window.location.href = "admin.html";
+  }
+});
+
+// =========================
+function showMsg(text) {
+  document.getElementById("msg").innerText = text;
+}
+</script>
+
+</body>
+</html>

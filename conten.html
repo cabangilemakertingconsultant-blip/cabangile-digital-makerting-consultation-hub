@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Content Control</title>
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body>
+
+<script>
+  // AUTH CHECK
+  if (localStorage.getItem("admin") !== "true") {
+    window.location.href = "admin.html";
+  }
+
+  // INIT SUPABASE
+  const supabaseUrl = "YOUR_SUPABASE_URL";
+  const supabaseKey = "YOUR_SUPABASE_ANON_KEY";
+  const client = supabase.createClient(supabaseUrl, supabaseKey);
+
+  // SAVE SETTINGS
+  function save() {
+    const settings = {
+      hero: document.getElementById("hero").checked,
+      ads: document.getElementById("ads").checked
+    };
+
+    localStorage.setItem("contentSettings", JSON.stringify(settings));
+
+    console.log("Saved:", settings);
+  }
+</script>
+
+<h2>Homepage Control</h2>
+
+<label>
+  <input type="checkbox" id="hero"> Show Hero
+</label>
+
+<br><br>
+
+<label>
+  <input type="checkbox" id="ads"> Show Ads
+</label>
+
+<br><br>
+
+<button onclick="save()">Save</button>
+
+</body>
+</html>

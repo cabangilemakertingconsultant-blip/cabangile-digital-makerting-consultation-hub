@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head><title>Generator</title></head>
+<body>
+<h1>AI Generator</h1>
+<input id="topic" placeholder="Topic">
+<button onclick="gen()">Generate</button>
+<div id="out"></div>
+
+<script>
+function gen(){
+  const t=document.getElementById('topic').value;
+  document.getElementById('out').innerHTML=
+  `<h2>${t}</h2><p>${t} content generated for SEO growth.</p>`;
+}
+</script>
+</body>
+</html>

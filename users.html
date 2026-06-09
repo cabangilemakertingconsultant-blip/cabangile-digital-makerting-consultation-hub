@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>User Management</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+<h2>Users</h2>
+
+<div id="users"></div>
+
+<script>
+  // =========================
+  // SUPABASE INIT
+  // =========================
+  const supabaseUrl = "YOUR_SUPABASE_URL";
+  const supabaseKey = "YOUR_SUPABASE_ANON_KEY";
+
+  const sb = supabase.createClient(supabaseUrl, supabaseKey);
+
+  // =========================
+  // ADMIN PROTECTION
+  // =========================
+  async function protectAdmin() {
+    const { data: { user } } = await sb.auth.getUser();
+
+    if (!user) {
+      window.location.href = "admin.html";
+      return;
+    }
+
+    const { data: profile } = await sb
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .single();
+
+    if (!profile || profile.role !== "admin") {
+      await sb.auth.signOut();
+      window.location.href = "admin.html";
+    }
+  }
+
+  protectAdmin();
+
+  // =========================
+  // LOAD USERS (YOUR REQUESTED FUNCTION)
+  // =========================
+  async function loadUsers() {
+    const { data, error } = await sb
+      .from("profiles")
+      .select("*");
+
+    if (error) {
+      console.log(error.message);
+      return [];
+    }
+
+    return data;
+  }
+
+  // =========================
+  // RENDER USERS
+  // =========================
+  async function renderUsers() {
+    const users = await loadUsers();
+
+    document.getElementById("users").innerHTML = users.map(u => `
+      <div style="border:1px solid #ccc; padding:10px; margin:10px;">
+        <p><b>${u.email || "No email"}</b></p>
+        <p>Status: ${u.status || "ACTIVE"}</p>
+        <p>Role: ${u.role}</p>
+
+        <button onclick="toggleUser('${u.id}', '${u.status}')">
+          Toggle Status
+        </button>
+      </div>
+    `).join("");
+  }
+
+  // =========================
+  // TOGGLE USER STATUS
+  // =========================
+  async function toggleUser(id, status) {
+    const newStatus = status === "ACTIVE" ? "SUSPENDED" : "ACTIVE";
+
+    await sb
+      .from("profiles")
+      .update({ status: newStatus })
+      .eq("id", id);
+
+    renderUsers();
+  }
+
+  renderUsers();
+</script>
+
+</body>
+</html>

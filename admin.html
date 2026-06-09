@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Login</title>
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="admin.js"></script>
+</head>
+<body>
+
+<h2>Admin Login</h2>
+
+<input id="email" placeholder="Email">
+<input id="password" type="password" placeholder="Password">
+
+<button onclick="login()">Login</button>
+
+<p id="msg"></p>
+
+<script>
+  // Supabase config
+  const supabaseUrl = "YOUR_SUPABASE_URL";
+  const supabaseKey = "YOUR_SUPABASE_ANON_KEY";
+  const client = supabase.createClient(supabaseUrl, supabaseKey);
+
+  async function login() {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    // 1. Login user
+    const { data, error } = await client.auth.signInWithPassword({
+      email,
+      password
+    });
+
+    if (error) {
+      document.getElementById("msg").innerText = error.message;
+      return;
+    }
+
+    // 2. Check role from profiles table
+    const { data: profile, error: profileError } = await client
+      .from("profiles")
+      .select("*")
+      .eq("id", data.user.id)
+      .single();
+
+    if (profileError) {
+      document.getElementById("msg").innerText = "Profile error: " + profileError.message;
+      await client.auth.signOut();
+      return;
+    }
+
+    // 3. Role check
+    if (profile.role !== "admin") {
+      alert("Access denied");
+      await client.auth.signOut();
+      return;
+    }
+
+    // 4. Success
+    localStorage.setItem("admin", "true");
+    window.location.href = "dashboard.html";
+  }
+</script>
+
+</body>
+</html>
